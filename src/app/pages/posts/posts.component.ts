@@ -60,8 +60,10 @@ export class PostsComponent implements OnInit {
     })
   }
 
-  // Observable tracking changes to the filter, we get those changes from router so that
-  // even on page reload, filter is preserved.
+  /**
+   * Observable tracking changes to the filter, we get those changes from router so that
+   * even on page reload, filter is preserved.
+   */
   filterChange$: Observable<FilterOptions> = this.route.queryParams.pipe(
     distinctUntilChanged(), // No need to re-emit if nothing changed.
     map(params => new FilterOptions(params)), // Create actual object.
@@ -69,12 +71,15 @@ export class PostsComponent implements OnInit {
   );
 
   // Post and user data, merged to appropriate type needed for PostListItemComponent.
-
   postsListData$: Observable<PostListItem[]> = combineLatest([
     this.postService.getAll(),
     this.userService.getAll()
   ]).pipe(map(this.mapToPostListItems))
 
+  /**
+   * Merging both the data and the filter, filtering the data. This is used
+   * to render the components.
+   */
   filteredPostList$: Observable<PostListItem[]> = this.filterChange$.pipe(
     mergeMap(filterOptions => forkJoin([of(filterOptions), this.postsListData$])),
     map(([filterOptions, posts]) => {
