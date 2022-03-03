@@ -1,0 +1,24 @@
+<div class="rounded shadow-md bg-white p-6">
+
+  <section class="mb-6" *ngIf="post">
+    <h1 class="text-xl">Post</h1>
+    <h1 class="text-lg font-medium">{{post.title}}</h1>
+    <p>{{post.body}}</p>
+  </section>
+
+  <section class="mb-6" *ngIf="user">
+    <h1 class="text-xl">User</h1>
+    <h1 class="font-medium">{{user.name}}</h1>
+    <p>{{user.username}}</p>
+    <p>{{user.email}}</p>
+  </section>
+
+  <section class="mb-6" *ngIf="post">
+    <h1 class="text-xl">Comments</h1>
+    <app-comment-list *ngIf="post" [comments]="getCommentsForPost(post.id)">
+    </app-comment-list>
+  </section>
+
+
+
+</div>

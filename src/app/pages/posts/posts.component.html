@@ -1,0 +1,25 @@
+<div class="flex max-h-full space-x-5">
+  <form (ngSubmit)="onFilterClick()" class="flex flex-col basis-1/5 ">
+    <div class="text-2xl font-semibold my-3">Filter</div>
+    <app-posts-filter [formControl]="filterForm"></app-posts-filter>
+
+    <div class="flex-row self-end space-x-1">
+      <button class="font-medium text-sm px-5 py-2.5 text-center " (click)="onFilterClearClick()">Clear</button>
+      <button type="submit"
+        class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">Filter</button>
+    </div>
+  </form>
+
+  <div class="rounded overflow-hidden shadow-md bg-white grid grid-cols-1 divide-y overflow-y-overlay basis-4/5">
+    <div *ngFor="let post of filteredPostList$ | async">
+      <app-post-list-item class="cursor-pointer" [post]="post" [routerLink]="['/post', post.id]">
+        <div class="flex justify-end" post-list-item-actions>
+          <button class="px-1 py-1 text-sm text-blue-600 hover:text-blue-800 font-semibold"
+            (click)="expandCommentsClick(post.id); $event.stopPropagation()">Show comments...</button>
+        </div>
+      </app-post-list-item>
+      <app-comment-list class="block bg-gray-100 px-5 py-3" *ngIf="expandedPostId === post.id" [comments]="getCommentsForPost(post.id)">
+      </app-comment-list>
+    </div>
+  </div>
+</div>
