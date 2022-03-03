@@ -1,3 +1,4 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,10 +12,26 @@ import { CommentService } from 'src/app/services/comment/comment.service';
 import { PostService } from 'src/app/services/post/post.service';
 import { UserService } from 'src/app/services/user/user.service';
 
+const ANIMATION_TIMING = '225ms cubic-bezier(0.4,0.0,0.2,1)'
 @Component({
   selector: 'app-posts',
   templateUrl: './posts.component.html',
-  styleUrls: ['./posts.component.scss']
+  styleUrls: ['./posts.component.scss'],
+  animations: [
+    trigger('rotate', [
+      state('false', style({ transform: 'none'})),
+      state('true', style({ transform: 'rotate(180deg)'})),
+      transition('* => *', animate(ANIMATION_TIMING)),
+    ]),
+    trigger('expandCollapse', [
+      transition(':leave', [
+        style({ height: '*', opacity: '1', 'padding-top': '*', 'padding-bottom': '*' }),
+        animate(ANIMATION_TIMING, style({ height: '0px', opacity: '0', 'padding-top': '0px', 'padding-bottom': '0px' }))
+      ]),
+      state('false', style({ height: '0px', 'padding-top': '0px', 'padding-bottom': '0px' })),
+      transition('false => true', animate(ANIMATION_TIMING)),
+    ]),
+  ],
 })
 export class PostsComponent implements OnInit {
 
@@ -72,9 +89,22 @@ export class PostsComponent implements OnInit {
     })
   )
 
+  /**
+   * Since comments are loaded asynchronously, we need to keep animation state
+   * so that we know to only start showing the animation once the comments are actually
+   * loaded.
+   * Need to have this in map, so that we know which element in ngFor should the caret rotate
+   * animation be applied to.
+   */
+  commentsAnimationState = new Map();
+
+  /**
+   * Post id that is currently expanded to show comments.
+   * Could be changed to Set if we want to support multiple expanded posts at the same time.
+   */
+  expandedPostId = -1;
 
   filterForm = new FormControl();
-  expandedPostId = -1; // Post id that is currently expanded to show comments.
 
   constructor(
     private postService: PostService,
@@ -101,7 +131,10 @@ export class PostsComponent implements OnInit {
 
   expandCommentsClick(postId: number) {
 
-    // Collapse
+    // Collapse currently expanded post.
+    this.commentsAnimationState.set(this.expandedPostId, false);
+
+    // Collapse if clicked to already expanded.
     if (postId === this.expandedPostId) {
       this.expandedPostId = -1;
       return;
@@ -111,7 +144,7 @@ export class PostsComponent implements OnInit {
   }
 
   getCommentsForPost(postId: number): Observable<CommentListItem[]> {
-    return this.commentService.getCommentListItemsForPost(postId);
+    return this.commentService.getCommentListItemsForPost(postId).pipe(tap(_ => this.commentsAnimationState.set(postId, true)));
   }
 
 

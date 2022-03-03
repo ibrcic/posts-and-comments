@@ -11,6 +11,7 @@ import { PostsFilterComponent } from './components/posts-filter/posts-filter.com
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommentListComponent } from './components/comment-list/comment-list.component';
 import { PostDetailsComponent } from './pages/post-details/post-details.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 export const API_BASE_URL = new InjectionToken<Environment>('api.base.url');
 
@@ -29,6 +30,7 @@ export const API_BASE_URL = new InjectionToken<Environment>('api.base.url');
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     { provide: API_BASE_URL, useValue: environment.baseApiUrl }

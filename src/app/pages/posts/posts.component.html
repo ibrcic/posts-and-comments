@@ -12,14 +12,21 @@
 
   <div class="rounded overflow-hidden shadow-md bg-white grid grid-cols-1 divide-y overflow-y-overlay basis-4/5">
     <div *ngFor="let post of filteredPostList$ | async">
+
       <app-post-list-item class="cursor-pointer" [post]="post" [routerLink]="['/post', post.id]">
         <div class="flex justify-end" post-list-item-actions>
-          <button class="px-1 py-1 text-sm text-blue-600 hover:text-blue-800 font-semibold"
-            (click)="expandCommentsClick(post.id); $event.stopPropagation()">Show comments...</button>
+          <button class="px-1 py-1 text-sm text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center"
+            (click)="expandCommentsClick(post.id); $event.stopPropagation()">
+            Comments
+            <img [@rotate]="commentsAnimationState.get(post.id)" class="fill-blue-800" src="./assets/caret-down.svg">
+          </button>
         </div>
       </app-post-list-item>
-      <app-comment-list class="block bg-gray-100 px-5 py-3" *ngIf="expandedPostId === post.id" [comments]="getCommentsForPost(post.id)">
+
+      <app-comment-list [@expandCollapse]="!!commentsAnimationState.get(post.id)" *ngIf="expandedPostId === post.id"
+        [comments]="getCommentsForPost(post.id)" class="block bg-gray-100 px-5 py-3 overflow-hidden">
       </app-comment-list>
+
     </div>
   </div>
 </div>
