@@ -5,8 +5,9 @@
 
     <div class="flex-row self-end space-x-1">
       <button class="font-medium text-sm px-5 py-2.5 text-center " (click)="onFilterClearClick()">Clear</button>
-      <button type="submit"
-        class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">Filter</button>
+      <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+        Filter
+      </button>
     </div>
   </form>
 
@@ -23,7 +24,8 @@
         </div>
       </app-post-list-item>
 
-      <app-comment-list [@expandCollapse]="!!commentsAnimationState.get(post.id)" *ngIf="expandedPostId === post.id"
+      <app-comment-list 
+        [@expandCollapse]="!!commentsAnimationState.get(post.id)" *ngIf="expandedPostId === post.id"
         [comments]="getCommentsForPost(post.id)" class="block bg-gray-100 px-5 py-3 overflow-hidden">
       </app-comment-list>
 
