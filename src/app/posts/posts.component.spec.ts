@@ -13,7 +13,7 @@ import { PostsFilterComponent } from './components/posts-filter/posts-filter.com
 
 import { PostsComponent } from './posts.component';
 
-fdescribe('PostsComponent', () => {
+describe('PostsComponent', () => {
   let component: PostsComponent;
   let fixture: ComponentFixture<PostsComponent>;
   let mockPostService = jasmine.createSpyObj("PostService", ["getAll"]);

@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 divide-y">
-  <div class="py-2" *ngFor="let comment of comments">
+  <article class="py-2" *ngFor="let comment of comments">
     <h1 class="font-medium">{{comment.name}}</h1>
     <p>{{comment.body}}</p>
     <p class="text-sm">{{comment.email}}</p>
-  </div>
+  </article>
 </div>
