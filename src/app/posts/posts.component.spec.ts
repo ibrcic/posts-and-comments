@@ -1,14 +1,14 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { API_BASE_URL } from '../app.module';
 import { GetPostResponse } from '../models/response/get-post-response';
 import { GetUserResponse } from '../models/response/get-user-response';
 import { PostService } from '../services/post/post.service';
-import { UserService } from '../services/user/user.service';
+import { FilterOptions } from './components/posts-filter/filter-options';
 import { PostsFilterComponent } from './components/posts-filter/posts-filter.component';
 
 import { PostsComponent } from './posts.component';
@@ -64,5 +64,22 @@ describe('PostsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should call router navigate() with proper arguments onFilterClick()', () => {
+    const router = TestBed.inject(Router);
+    const route = TestBed.inject(ActivatedRoute);
+    const spy = spyOn(router, 'navigate').and.callThrough();
+    component.onFilterClick();
+    expect(spy).toHaveBeenCalledWith([], { relativeTo: route, queryParams: component.filterForm.value });
+  })
+
+  it('should clear form and call onFilterClick() when onFilterClearClick() called', () => {
+    const usersNameQuery = 'query'
+    const spy = spyOn(component, 'onFilterClick').and.callThrough();
+    component.filterForm.setValue(new FilterOptions({ usersNameQuery }))
+    component.onFilterClearClick();
+    expect(component.filterForm.value.usersNameQuery).toBe('');
+    expect(spy).toHaveBeenCalled();
+  })
 
 });
