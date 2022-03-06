@@ -102,14 +102,13 @@ export class PostsComponent implements OnInit {
    * Need to have this in map, so that we know which element in ngFor should the caret rotate
    * animation be applied to.
    */
-  commentsAnimationState = new Map();
+  commentsAnimationState = new Map<number, boolean>();
 
   /**
    * Post id that is currently expanded to show comments.
    * Could be changed to Set if we want to support multiple expanded posts at the same time.
    */
   expandedPostId = -1;
-
   filterForm = new FormControl();
 
   /**
