@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { API_BASE_URL } from 'src/app/app.module';
-import { CommentListItem } from 'src/app/components/comment-list/comment-list-item';
+import { CommentListItem } from 'src/app/shared-modules/comment-list/comment-list/comment-list-item';
 import { GetCommentResponse } from 'src/app/models/response/get-comment-response';
 
 @Injectable({

@@ -15,7 +15,7 @@
 
   <section class="mb-6" *ngIf="post">
     <h1 class="text-xl">Comments</h1>
-    <app-comment-list *ngIf="post" [comments]="getCommentsForPost(post.id)">
+    <app-comment-list *ngIf="post" [comments]="(comments$ | async) || []">
     </app-comment-list>
   </section>
 

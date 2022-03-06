@@ -26,7 +26,7 @@
 
       <app-comment-list 
         [@expandCollapse]="!!commentsAnimationState.get(post.id)" *ngIf="expandedPostId === post.id"
-        [comments]="getCommentsForPost(post.id)" class="block bg-gray-100 px-5 py-3 overflow-hidden">
+        [comments]="(getCommentsForPost(post.id) | async) || []" class="block bg-gray-100 px-5 py-3 overflow-hidden">
       </app-comment-list>
 
     </div>

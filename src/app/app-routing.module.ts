@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PostDetailsComponent } from './pages/post-details/post-details.component';
-import { PostsComponent } from './pages/posts/posts.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'posts', pathMatch: 'full' },
-  { path: 'posts', component: PostsComponent },
-  { path: 'post/:postId', component: PostDetailsComponent}
+  { path: 'posts', loadChildren: () => import('./posts/posts.module').then(m => m.PostsModule) },
+  { path: 'post/:postId', loadChildren: () => import('./post-details/post-details.module').then(m => m.PostDetailsModule)  }
 ];
 
 @NgModule({

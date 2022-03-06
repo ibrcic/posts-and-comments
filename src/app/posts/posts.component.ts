@@ -1,16 +1,16 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, distinctUntilChanged, forkJoin, map, mergeMap, Observable, of, tap } from 'rxjs';
-import { CommentListItem } from 'src/app/components/comment-list/comment-list-item';
-import { PostListItem } from 'src/app/components/post-list-item/post-list-item';
-import { FilterOptions } from 'src/app/components/posts-filter/filter-options';
+import { CommentListItem } from 'src/app/shared-modules/comment-list/comment-list/comment-list-item';
+import { FilterOptions } from 'src/app/posts/components/posts-filter/filter-options';
 import { GetPostResponse } from 'src/app/models/response/get-post-response';
 import { GetUserResponse } from 'src/app/models/response/get-user-response';
 import { CommentService } from 'src/app/services/comment/comment.service';
 import { PostService } from 'src/app/services/post/post.service';
 import { UserService } from 'src/app/services/user/user.service';
+import { PostListItem } from 'src/app/shared-modules/post-list/components/post-list-item/post-list-item';
 
 const ANIMATION_TIMING = '225ms cubic-bezier(0.4,0.0,0.2,1)'
 @Component({
@@ -19,8 +19,8 @@ const ANIMATION_TIMING = '225ms cubic-bezier(0.4,0.0,0.2,1)'
   styleUrls: ['./posts.component.scss'],
   animations: [
     trigger('rotate', [
-      state('false', style({ transform: 'none'})),
-      state('true', style({ transform: 'rotate(180deg)'})),
+      state('false', style({ transform: 'none' })),
+      state('true', style({ transform: 'rotate(180deg)' })),
       transition('* => *', animate(ANIMATION_TIMING)),
     ]),
     trigger('expandCollapse', [
@@ -32,6 +32,7 @@ const ANIMATION_TIMING = '225ms cubic-bezier(0.4,0.0,0.2,1)'
       transition('false => true', animate(ANIMATION_TIMING)),
     ]),
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PostsComponent implements OnInit {
 
@@ -111,12 +112,17 @@ export class PostsComponent implements OnInit {
 
   filterForm = new FormControl();
 
+  /**
+   * Observables for comments, stored in map so it is not recreated each time which re-triggers change detection.
+   */
+  comments$ = new Map<number, Observable<CommentListItem[]>>();
+
   constructor(
     private postService: PostService,
     private userService: UserService,
     private commentService: CommentService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
   }
 
@@ -149,7 +155,16 @@ export class PostsComponent implements OnInit {
   }
 
   getCommentsForPost(postId: number): Observable<CommentListItem[]> {
-    return this.commentService.getCommentListItemsForPost(postId).pipe(tap(_ => this.commentsAnimationState.set(postId, true)));
+    let comments$ = this.comments$.get(postId);
+
+    if (!comments$) {
+      comments$ = this.commentService.getCommentListItemsForPost(postId).pipe(
+        tap(_ => this.commentsAnimationState.set(postId, true))
+      );
+      this.comments$.set(postId, comments$);
+    }
+
+    return comments$;
   }
 
 
